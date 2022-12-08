@@ -48,25 +48,6 @@ class Featurization_parameters:
         self.ADDING_H = False
         self.KEEP_ATOM_MAP = False
 
-# Create a global parameter object for reference throughout this module
-PARAMS = Featurization_parameters()
-
-# set the atom feature sizes
-def set_atom_fdim(PARAMS) -> int:
-    """Automatically sets the dimensionality of atom features."""
-    mol = Chem.MolFromSmiles('[H][H]')
-    atoms = [a for a in mol.GetAtoms()]
-    PARAMS.ATOM_FDIM = len(atom_features(atoms[0]))
-set_atom_fdim(PARAMS)
-
-# set the bond feature sizes
-def set_bond_fdim(PARAMS) -> int:
-    """Automatically sets the dimensionality of bond features."""
-    mol = Chem.MolFromSmiles('[H][H]')
-    bonds = [b for b in mol.GetBonds()]
-    PARAMS.BOND_FDIM = len(bond_features(bonds[0]))
-set_bond_fdim(PARAMS)
-
 
 def reset_featurization_parameters(logger: logging.Logger = None) -> None:
     """
@@ -79,6 +60,8 @@ def reset_featurization_parameters(logger: logging.Logger = None) -> None:
     debug('Setting molecule featurization parameters to default.')
     global PARAMS
     PARAMS = Featurization_parameters()
+    set_atom_fdim(PARAMS)
+    set_bond_fdim(PARAMS)
 
 
 def get_atom_fdim(overwrite_default_atom: bool = False, is_reaction: bool = False) -> int:
@@ -325,6 +308,25 @@ def map_reac_to_prod(mol_reac: Chem.Mol, mol_prod: Chem.Mol):
         else:
             only_reac_ids.append(atom.GetIdx())
     return reac_id_to_prod_id, only_prod_ids, only_reac_ids
+
+# Create a global parameter object for reference throughout this module
+PARAMS = Featurization_parameters()
+
+# set the atom feature sizes
+def set_atom_fdim(PARAMS) -> int:
+    """Automatically sets the dimensionality of atom features."""
+    mol = Chem.MolFromSmiles('[H][H]')
+    atoms = [a for a in mol.GetAtoms()]
+    PARAMS.ATOM_FDIM = len(atom_features(atoms[0]))
+set_atom_fdim(PARAMS)
+
+# set the bond feature sizes
+def set_bond_fdim(PARAMS) -> int:
+    """Automatically sets the dimensionality of bond features."""
+    mol = Chem.MolFromSmiles('[H][H]')
+    bonds = [b for b in mol.GetBonds()]
+    PARAMS.BOND_FDIM = len(bond_features(bonds[0]))
+set_bond_fdim(PARAMS)
 
 
 class MolGraph:
