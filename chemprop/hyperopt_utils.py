@@ -22,9 +22,7 @@ def build_search_space(search_parameters: List[str], train_epochs: int = None) -
     :return: A dictionary keyed by the parameter names of hyperopt search functions.
     """
     available_spaces = {
-        "activation": hp.choice(
-            "activation", options=["ReLU", "LeakyReLU", "PReLU", "tanh", "SELU", "ELU"]
-        ),
+        "activation": hp.choice("activation", options=['ReLU', 'LeakyReLU', 'PReLU', 'tanh', 'SELU', 'ELU', 'SiLU', 'GELU']),
         "aggregation": hp.choice("aggregation", options=["mean", "sum", "norm"]),
         "aggregation_norm": hp.quniform("aggregation_norm", low=1, high=200, q=1),
         "batch_size": hp.quniform("batch_size", low=5, high=200, q=5),
