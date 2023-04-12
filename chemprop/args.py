@@ -352,7 +352,7 @@ class TrainArgs(CommonArgs):
     Only relevant if :code:`number_of_molecules > 1`"""
     dropout: float = 0.0
     """Dropout probability."""
-    activation: Literal['ReLU', 'LeakyReLU', 'PReLU', 'tanh', 'SELU', 'ELU'] = 'ReLU'
+    activation: Literal['ReLU', 'LeakyReLU', 'PReLU', 'tanh', 'SELU', 'ELU', 'SiLU', 'GELU'] = 'ReLU'
     """Activation function."""
     atom_messages: bool = False
     """Centers messages on atoms instead of on bonds."""
