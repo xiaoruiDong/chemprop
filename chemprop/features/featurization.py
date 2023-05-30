@@ -224,11 +224,13 @@ def atom_features(atom: Chem.rdchem.Atom, functional_groups: List[int] = None) -
         if functional_groups is not None:
             features += functional_groups
 
-        features += [atom.IsInRingSize(3),
+        features += [atom.IsInRing(),
+                     atom.IsInRingSize(3),
                      atom.IsInRingSize(4),
                      atom.IsInRingSize(5),
                      atom.IsInRingSize(6),
                      atom.IsInRingSize(7),
+                     atom.IsInRingSize(8),
                      ]
 
     return features
@@ -267,11 +269,13 @@ def bond_features(bond: Chem.rdchem.Bond) -> List[Union[bool, int, float]]:
             bt == Chem.rdchem.BondType.TRIPLE,
             bt == Chem.rdchem.BondType.AROMATIC,
             (bond.GetIsConjugated() if bt is not None else 0),
+            (bond.IsInRing() if bt is not None else 0),
             (bond.IsInRingSize(3) if bt is not None else 0),
             (bond.IsInRingSize(4) if bt is not None else 0),
             (bond.IsInRingSize(5) if bt is not None else 0),
             (bond.IsInRingSize(6) if bt is not None else 0),
             (bond.IsInRingSize(7) if bt is not None else 0),
+            (bond.IsInRingSize(8) if bt is not None else 0),
         ]
         fbond += onek_encoding_unk(int(bond.GetStereo()), list(range(6)))
     return fbond
