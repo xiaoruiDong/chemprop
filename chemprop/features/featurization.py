@@ -15,7 +15,7 @@ class Featurization_parameters:
     def __init__(self) -> None:
 
         # Atom feature sizes
-        self.ATOMIC_SYMBOLS = ['H', 'C', 'N', 'O', 'S']
+        self.ATOMIC_SYMBOLS = ['H', 'C', 'N', 'O', 'S', 'Cl']
         self.ATOM_FEATURES = {
             'atomic_symbol': self.ATOMIC_SYMBOLS,
             'degree': [0, 1, 2, 3, 4, 5],
