@@ -1076,8 +1076,9 @@ class HyperoptArgs(TrainArgs):
         supported_keywords = [
             "basic", "learning_rate", "linked_hidden_size", "all",
             "activation", "aggregation", "aggregation_norm", "batch_size", "depth",
-            "dropout", "ffn_hidden_size", "ffn_num_layers", "final_lr", "hidden_size",
-            "init_lr", "max_lr", "warmup_epochs"
+            "dropout", "ffn_hidden_size", "ffn_num_layers", "hidden_size",
+            "final_lr", "init_lr", "max_lr", "warmup_epochs",
+            "depth_solvent", "hidden_size_solvent",
         ]
         supported_parameters = [
             "activation", "aggregation", "aggregation_norm", "batch_size", "depth",
