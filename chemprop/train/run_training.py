@@ -442,10 +442,4 @@ def run_training(args: TrainArgs,
 
         test_preds_dataframe.to_csv(os.path.join(args.save_dir, 'test_preds.csv'), index=False)
 
-    # finally, make plots to visualize training
-    logfile = os.path.join(os.path.dirname(args.save_dir), 'verbose.log')
-    plot_train_val_loss(logfile)
-    plot_lr(logfile)
-    plot_gnorm_pnorm(logfile)
-
     return ensemble_scores
