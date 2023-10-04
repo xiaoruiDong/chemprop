@@ -3,6 +3,7 @@ from functools import cached_property
 from typing import NamedTuple
 
 import numpy as np
+from numpy.typing import ArrayLike
 from rdkit import Chem
 from sklearn.preprocessing import StandardScaler
 from torch.utils.data import Dataset
@@ -35,7 +36,7 @@ class _MolGraphDatasetMixin:
     @cached_property
     def _Y(self) -> np.ndarray:
         """the raw targets of the dataset"""
-        return np.array([d.y for d in self.data])
+        return np.array([d.y for d in self.data], float)
 
     @property
     def Y(self) -> np.ndarray:
@@ -43,15 +44,15 @@ class _MolGraphDatasetMixin:
         return self.__Y
 
     @Y.setter
-    def Y(self, Y: np.ndarray):
+    def Y(self, Y: ArrayLike):
         self._validate_attribute(Y, "targets")
 
-        self.__Y = Y
+        self.__Y = np.array(Y, float)
 
     @cached_property
     def _X_f(self) -> np.ndarray:
         """the raw molecule features of the dataset"""
-        return np.array([d.x_f for d in self.data])
+        return np.array([d.x_f for d in self.data], float)
 
     @property
     def X_f(self) -> np.ndarray:
@@ -59,26 +60,31 @@ class _MolGraphDatasetMixin:
         return self.__X_f
 
     @X_f.setter
-    def X_f(self, X_f: np.ndarray):
+    def X_f(self, X_f: ArrayLike):
         self._validate_attribute(X_f, "molecule features")
 
-        self.__X_f = X_f
+        self.__X_f = np.array(X_f, float)
 
     @property
     def weights(self) -> np.ndarray:
-        return np.array([d.weight for d in self.data])
+        return np.array([d.weight for d in self.data], float)
 
     @property
     def gt_mask(self) -> np.ndarray:
-        return np.array([d.gt_mask for d in self.data])
+        return np.array([d.gt_mask for d in self.data], float)
 
     @property
     def lt_mask(self) -> np.ndarray:
-        return np.array([d.lt_mask for d in self.data])
+        return np.array([d.lt_mask for d in self.data], float)
 
     @property
     def t(self) -> int | None:
         return self.data[0].t if len(self.data) > 0 else None
+
+    @property
+    def d_xf(self) -> int:
+        """the extra molecule feature dimension, if any"""
+        return None if self.X_f[0] is None else self.V_fs[0].shape[1]
 
     def normalize_targets(self, scaler: StandardScaler | None = None) -> StandardScaler:
         """Normalizes the targets of the dataset using a :obj:`StandardScaler`
@@ -164,7 +170,7 @@ class MoleculeDataset(Dataset, _MolGraphDatasetMixin):
     @property
     def _V_fs(self) -> np.ndarray:
         """the raw atom features of the dataset"""
-        return np.array([d.V_f for d in self.data])
+        return np.array([d.V_f for d in self.data], float)
 
     @property
     def V_fs(self) -> np.ndarray:
@@ -176,12 +182,12 @@ class MoleculeDataset(Dataset, _MolGraphDatasetMixin):
         """the (scaled) atom features of the dataset"""
         self._validate_attribute(V_fs, "atom features")
 
-        self.__V_fs = V_fs
+        self.__V_fs = np.array(V_fs, float)
 
     @property
     def _E_fs(self) -> np.ndarray:
         """the raw bond features of the dataset"""
-        return np.array([d.E_f for d in self.data])
+        return np.array([d.E_f for d in self.data], float)
 
     @property
     def E_fs(self) -> np.ndarray:
@@ -192,12 +198,12 @@ class MoleculeDataset(Dataset, _MolGraphDatasetMixin):
     def E_fs(self, E_fs: np.ndarray):
         self._validate_attribute(E_fs, "bond features")
 
-        self.__E_fs = E_fs
+        self.__E_fs = np.array(E_fs, float)
 
     @property
     def _V_ds(self) -> np.ndarray:
         """the raw atom descriptors of the dataset"""
-        return np.array([d.V_d for d in self.data])
+        return np.array([d.V_d for d in self.data], float)
 
     @property
     def V_ds(self) -> np.ndarray:
@@ -208,20 +214,20 @@ class MoleculeDataset(Dataset, _MolGraphDatasetMixin):
     def V_ds(self, V_ds: np.ndarray):
         self._validate_attribute(V_ds, "atom descriptors")
 
-        self.__V_ds = V_ds
+        self.__V_ds = np.array(V_ds, float)
 
     @property
-    def d_vf(self) -> int | None:
+    def d_vf(self) -> int:
         """the extra atom feature dimension, if any"""
-        return None if self.V_fs[0] is None else self.V_fs[0].shape[1]
+        return 0 if np.isnan(self.V_fs).all() else self.V_fs[0].shape[1]
 
     @property
-    def d_ef(self) -> int | None:
+    def d_ef(self) -> int:
         """the extra bond feature dimension, if any"""
         return None if self.E_fs[0] is None else self.E_fs[0].shape[1]
 
     @property
-    def d_vd(self) -> int | None:
+    def d_vd(self) -> int:
         """the extra atom descriptor dimension, if any"""
         return None if self.V_ds[0] is None else self.V_ds[0].shape[1]
 
