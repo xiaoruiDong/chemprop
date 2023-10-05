@@ -244,7 +244,7 @@ def add_train_args(parser: ArgumentParser) -> ArgumentParser:
     )
     data_args.add_argument(
         "--ignore-columns",
-        type=list,
+        nargs='+',
         help="Name of the columns to ignore when :code:`target_columns` is not provided.",
     )
 
