@@ -260,10 +260,8 @@ def add_train_args(parser: ArgumentParser) -> ArgumentParser:
         "-t",
         "--task-type",
         default="regression",
-        action=RegistryAction(
-            ReadoutRegistry
-        ),  # TODO: is this correct? The choices should be ['regression', 'classification', 'multiclass', 'spectra']
-        help="Type of dataset. This determines the default loss function used during training.",
+        action=RegistryAction(ReadoutRegistry),
+        help="Type of task. This also determines the default loss function used during training.",
     )
     data_args.add_argument(
         "--spectra-phase-mask-path",
