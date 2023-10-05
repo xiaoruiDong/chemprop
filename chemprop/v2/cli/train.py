@@ -248,12 +248,12 @@ def add_train_args(parser: ArgumentParser) -> ArgumentParser:
     # data_args is added in add_common_args()
     data_args.add_argument(
         "--target-columns",
-        type=list,
+        nargs='+',
         help="Name of the columns containing target values. By default, uses all columns except the SMILES column and the :code:`ignore_columns`.",
     )
     data_args.add_argument(
         "--ignore-columns",
-        type=list,
+        nargs='+',
         help="Name of the columns to ignore when :code:`target_columns` is not provided.",
     )
 
@@ -261,10 +261,8 @@ def add_train_args(parser: ArgumentParser) -> ArgumentParser:
         "-t",
         "--task-type",
         default="regression",
-        action=RegistryAction(
-            ReadoutRegistry
-        ),  # TODO: is this correct? The choices should be ['regression', 'classification', 'multiclass', 'spectra']
-        help="Type of dataset. This determines the default loss function used during training.",
+        action=RegistryAction(ReadoutRegistry),
+        help="Type of task. This also determines the default loss function used during training.",
     )
     data_args.add_argument(
         "--spectra-phase-mask-path",
@@ -356,7 +354,12 @@ def add_train_args(parser: ArgumentParser) -> ArgumentParser:
         type=list[float],
         help="Weights associated with each target, affecting the relative weight of targets in the loss function. Must match the number of target columns.",
     )
-    train_args.add_argument("-l", "--loss-function", action=RegistryAction(LossFunctionRegistry))
+    train_args.add_argument(
+        "-l",
+        "--loss-function",
+        action=RegistryAction(LossFunctionRegistry),
+        help="Loss function to use during training. If not specified, will use the default loss function for the given task type.",
+    )
     train_args.add_argument(
         "--v-kl",
         "--evidential-regularization",
@@ -643,16 +646,17 @@ def main(args):
         test_loader = None
 
     model = MPNN(
-        mp_block,
-        agg,
-        readout_ffn,
-        None,
-        args.task_weights,
-        args.warmup_epochs,
-        args.num_lrs,
-        args.init_lr,
-        args.max_lr,
-        args.final_lr,
+        message_passing=mp_block,
+        agg=agg,
+        readout=readout_ffn,
+        batch_norm=True,  # TODO: add this as an argument
+        metrics=None,  # TODO: feed in metrics according to args.metrics
+        w_t=args.task_weights,
+        warmup_epochs=args.warmup_epochs,
+        # num_lrs=args.num_lrs,  # TODO: uncomment it after `num_lrs` is used in MPNN.__init__
+        init_lr=args.init_lr,
+        max_lr=args.max_lr,
+        final_lr=args.final_lr,
     )
     logger.info(model)
 
