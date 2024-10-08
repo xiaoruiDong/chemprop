@@ -140,6 +140,6 @@ eval "$cmd_solv"
 echo ""
 echo "Merging gas phase barrier height prediction with solvation corrections"
 echo "Saving predictions to $preds_path"
-python merge_data.py $preds_path $rxn_column
+python "$paper_results_dir/scripts/merge_data.py" $preds_path $rxn_column
 
 echo "Predictions finished. Results can be found at $preds_path"
