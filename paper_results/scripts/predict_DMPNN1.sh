@@ -4,14 +4,14 @@
 
 # Path to the paper_results folder
 # The script set this path automatically by default
-# However, if runing into issues, you may manually set this path
+# However, if running into issues, you may manually set this path
 paper_results_dir=$(dirname $(dirname "$(realpath "$0")"))
 # paper_results_dir="/path/to/chemprop/paper_results"
 
 # Input file
 # A csv file containing reaction SMILES
 test_path=example_reactions.csv
-rxn_column="rxn_smiles"s
+rxn_column="rxn_smiles"
 # Input file example: using a file in datasets folder as an example
 # You may comment out the following two lines to test the script
 # test_path="$paper_results_dir/datasets/all_rxn_water_forward_noresonance.csv"
@@ -51,9 +51,9 @@ batch_size=32
 ####### End of Input Parameters ########
 
 # Print configuration
-echo "##########################################################################"
-echo "# Predict Gibbs free energy of activation and of reaction using D-MPNN-1 #"
-echo "##########################################################################"
+echo "###################################################################################"
+echo "# Predict Gibbs free energy of activation and of reaction in water using D-MPNN-1 #"
+echo "###################################################################################"
 echo ""
 if [ ! -f "$test_path" ]; then
     echo "Please double check if the file at $test_path exists."

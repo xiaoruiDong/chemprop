@@ -23,7 +23,7 @@ def main():
     df_pred = pd.concat([df_solv, df_gas], axis=1)
     df_pred = df_pred.drop(columns=[f'{rxn_column}_gas'])
 
-    # Computat solvated barrier heights
+    # Compute solvated barrier heights
     for dg in ['DeltaG_ET', 'DeltaG_EP']:
         for i in range(n_models):
             df_pred[f'{dg}_soln_molar_kcal_mol_model_{i}'] = df_pred[f'{dg}_gas_molar_kcal_mol_model_{i}'] + df_pred[f'Delta{dg}_solv_molar_kcal_mol_model_{i}']
